@@ -38,22 +38,15 @@ app.get('/remote-offer-html', (req, res) => {
 });
 
 app.get('/remote-offer-html-dynamic', (req, res) => {
-   const color = req.query.color || 'red';
+ const color = req.query.color || 'red';
   
   res.set({
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET',
     'Cache-Control': 'no-cache'
   });
   
-  res.json({
-  items: [{
-    schema: 'https://ns.adobe.com/personalization/html-content-item',
-    data: {
-      content: `<div style="width:100px;height:100px;background:${color}"></div>`
-    }
-  }]
-});
+  // Return as a JSON string (escaped HTML)
+  res.type('json').send(JSON.stringify(`<div style="width:100px;height:100px;background:${color}"></div>`));
 });
 
 // 404 handler
