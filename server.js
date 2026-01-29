@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
@@ -16,14 +17,45 @@ app.get('/', (req, res) => {
   res.render('index', {
     title: 'Home',
     heading: 'Welcome to OrangeCap2',
-    message: 'A static website built with Express and EJS'
+    message: 'A static website built with Express and EJS',
+    launchUrl: process.env.LAUNCH_URL
   });
+});
+
+app.get('/remote-offer-html', (req, res) => {
+  const { height = '100px', width = '100px', color = 'red' } = req.query;
+
+  const html = `
+    <div id="target-offer-container"></div>
+    <script>
+      const div = document.createElement('div');
+      div.style.cssText = 'width:${width};height:${height};background:${color}';
+      document.getElementById('target-offer-container').appendChild(div);
+    </script>
+  `;
+
+  res.setHeader('Content-Type', 'text/html');
+  res.send(html);
+});
+
+app.get('/remote-offer-js', (req, res) => {
+  const { height = '100px', width = '100px', color = 'red' } = req.query;
+
+  const js = `
+    const div = document.createElement('div');
+    div.style.cssText = 'width:${width};height:${height};background:${color}';
+    document.body.appendChild(div);
+  `;
+  
+  res.setHeader('Content-Type', 'text/javascript');
+  res.send(js);
 });
 
 // 404 handler
 app.use((req, res) => {
   res.status(404).render('404', {
-    title: '404 - Page Not Found'
+    title: '404 - Page Not Found',
+    launchUrl: process.env.LAUNCH_URL
   });
 });
 
