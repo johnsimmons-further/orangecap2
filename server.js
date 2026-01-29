@@ -26,7 +26,6 @@ app.get('/remote-offer-html', (req, res) => {
   const { height = '100px', width = '100px', color = 'red' } = req.query;
 
   const html = `
-    <div id="target-offer-container"></div>
     <script>
       const div = document.createElement('div');
       div.style.cssText = 'width:${width};height:${height};background:${color}';
