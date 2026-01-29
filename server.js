@@ -38,12 +38,12 @@ app.get('/remote-offer-html', (req, res) => {
 });
 
 app.get('/remote-offer-js', (req, res) => {
-  const { height = '100px', width = '100px', color = 'red' } = req.query;
+  const { height = '100px', width = '100px', color = 'blue' } = req.query;
 
   const js = `
     const div = document.createElement('div');
     div.style.cssText = 'width:${width};height:${height};background:${color}';
-    document.body.appendChild(div);
+    document.getElementById('target-offer-container').appendChild(div);
   `;
   
   res.setHeader('Content-Type', 'text/javascript');
