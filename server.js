@@ -38,9 +38,17 @@ app.get('/remote-offer-html', (req, res) => {
 });
 
 app.get('/remote-offer-html-dynamic', (req, res) => {
-  const color = req.query.color || 'green';
-  res.set('Content-Type', 'text/html');
-  res.send(`<div style="width:100px;height:100px;background:${color}"></div>`);
+  const color = req.query.color || 'red';
+  
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Cache-Control': 'no-cache'
+  });
+  
+  res.json({
+    html: `<div style="width:100px;height:100px;background:${color}"></div>`
+  });
 });
 
 // 404 handler
