@@ -38,7 +38,7 @@ app.get('/remote-offer-html', (req, res) => {
 });
 
 app.get('/remote-offer-html-dynamic', (req, res) => {
-  const color = req.query.color || 'red';
+   const color = req.query.color || 'red';
   
   res.set({
     'Access-Control-Allow-Origin': '*',
@@ -47,6 +47,7 @@ app.get('/remote-offer-html-dynamic', (req, res) => {
   });
   
   res.json({
+    type: 'html',
     content: `<div style="width:100px;height:100px;background:${color}"></div>`
   });
 });
