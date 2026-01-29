@@ -37,17 +37,10 @@ app.get('/remote-offer-html', (req, res) => {
   res.send(html);
 });
 
-app.get('/remote-offer-js', (req, res) => {
-  const { height = '100px', width = '100px', color = 'blue' } = req.query;
-
-  const js = `
-    const div = document.createElement('div');
-    div.style.cssText = 'width:${width};height:${height};background:${color}';
-    document.getElementById('target-offer-container').appendChild(div);
-  `;
-  
-  res.setHeader('Content-Type', 'text/javascript');
-  res.send(js);
+app.get('/remote-offer-html-dynamic', (req, res) => {
+  const color = req.query.color || 'green';
+  res.set('Content-Type', 'text/html');
+  res.send(`<div style="width:100px;height:100px;background:${color}"></div>`);
 });
 
 // 404 handler
