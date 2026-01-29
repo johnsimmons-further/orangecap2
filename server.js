@@ -47,7 +47,7 @@ app.get('/remote-offer-html-dynamic', (req, res) => {
   });
   
   res.json({
-    html: `<div style="width:100px;height:100px;background:${color}"></div>`
+    content: `<div style="width:100px;height:100px;background:${color}"></div>`
   });
 });
 
