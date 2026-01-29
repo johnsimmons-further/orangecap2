@@ -47,9 +47,13 @@ app.get('/remote-offer-html-dynamic', (req, res) => {
   });
   
   res.json({
-    type: 'html',
-    content: `<div style="width:100px;height:100px;background:${color}"></div>`
-  });
+  items: [{
+    schema: 'https://ns.adobe.com/personalization/html-content-item',
+    data: {
+      content: `<div style="width:100px;height:100px;background:${color}"></div>`
+    }
+  }]
+});
 });
 
 // 404 handler
