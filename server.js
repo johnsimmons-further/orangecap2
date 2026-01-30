@@ -59,8 +59,19 @@ app.get("/remote-offer-html-dynamic", (req, res) => {
 
 app.get('/api/loyalty-offer', (req, res) => {
   const { tier = 'bronze' } = req.query;
-  
+
   const tiers = {
+    base: {
+      name: 'Member',
+      discount: 'Join Free',
+      color: '#6366F1',
+      gradient1: '#6366F1',
+      gradient2: '#4F46E5',
+      icon: generateBaseSVG(),
+      perks: ['Exclusive member discounts', 'Early sale access', 'Birthday rewards', 'Free shipping on orders'],
+      badge: '✨',
+      isSignup: true
+    },
     bronze: {
       name: 'Bronze',
       discount: '10%',
@@ -98,6 +109,36 @@ app.get('/api/loyalty-offer', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.send(generateModalHTML(tierData));
 });
+
+function generateBaseSVG() {
+  return `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="baseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#4F46E5;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#4338CA;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <!-- Gift box base -->
+      <rect x="35" y="55" width="50" height="45" fill="url(#baseGrad)" stroke="#3730A3" stroke-width="2" rx="3"/>
+      <!-- Ribbon vertical -->
+      <rect x="55" y="55" width="10" height="45" fill="#818CF8" opacity="0.8"/>
+      <!-- Ribbon horizontal -->
+      <rect x="35" y="72" width="50" height="10" fill="#818CF8" opacity="0.8"/>
+      <!-- Bow -->
+      <path d="M 45 45 Q 35 35 40 25 Q 45 30 50 25 Q 55 20 60 25 Q 65 30 70 25 Q 75 35 65 45 Q 60 50 60 55 L 50 55 Q 50 50 45 45 Z"
+            fill="#C7D2FE"
+            stroke="#3730A3"
+            stroke-width="1.5"/>
+      <!-- Sparkles -->
+      <circle cx="30" cy="40" r="2" fill="#FCD34D" opacity="0.9"/>
+      <circle cx="90" cy="50" r="2" fill="#FCD34D" opacity="0.9"/>
+      <circle cx="25" cy="70" r="2" fill="#FCD34D" opacity="0.9"/>
+      <circle cx="95" cy="80" r="2" fill="#FCD34D" opacity="0.9"/>
+    </svg>
+  `;
+}
 
 function generateBronzeSVG() {
   return `
@@ -286,12 +327,24 @@ function generateModalHTML(tierData) {
               font-weight: 800;
               box-shadow: 0 4px 15px ${tierData.color}40;
             ">
-              ${tierData.discount} OFF
+              ${tierData.isSignup ? tierData.discount : tierData.discount + ' OFF'}
             </div>
           </div>
-          
+
           <!-- Perks list -->
           <div style="flex: 1; margin-bottom: 20px;">
+            ${tierData.isSignup ? `
+              <p style="
+                text-align: center;
+                color: #333;
+                font-size: 1em;
+                margin: 0 0 20px 0;
+                font-weight: 600;
+                line-height: 1.5;
+              ">
+                Join our loyalty program and unlock amazing rewards!
+              </p>
+            ` : ''}
             <p style="
               text-align: center;
               color: #666;
@@ -299,7 +352,7 @@ function generateModalHTML(tierData) {
               margin: 0 0 15px 0;
               font-weight: 600;
             ">
-              YOUR EXCLUSIVE BENEFITS
+              ${tierData.isSignup ? 'MEMBER BENEFITS' : 'YOUR EXCLUSIVE BENEFITS'}
             </p>
             ${tierData.perks.map(perk => `
               <div style="
@@ -347,16 +400,16 @@ function generateModalHTML(tierData) {
               this.style.transform='translateY(0)';
               this.style.boxShadow='0 4px 15px ${tierData.color}40';
             ">
-              Shop Now →
+              ${tierData.isSignup ? 'Join Free →' : 'Shop Now →'}
             </button>
-            
+
             <p style="
               text-align: center;
               margin: 12px 0 0 0;
               color: #999;
               font-size: 0.75em;
             ">
-              Applied automatically at checkout
+              ${tierData.isSignup ? 'No credit card required • Start earning rewards today' : 'Applied automatically at checkout'}
             </p>
           </div>
         </div>
