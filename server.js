@@ -58,7 +58,7 @@ app.get("/remote-offer-html-dynamic", (req, res) => {
 
 
 app.get('/api/loyalty-offer', (req, res) => {
-  const { tier = 'bronze' } = req.query;
+  const { tier = 'base' } = req.query;
 
   const tiers = {
     base: {
