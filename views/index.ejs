@@ -3,26 +3,108 @@
 <div class="hero">
   <div class="container">
   <div id="loyalty-offer-container"></div>
-    <h1><%= heading %></h1>
-    <p class="lead"><%= message %></p>
+    <h1>Adobe Target Remote Offers Demo</h1>
+    <p class="lead">Personalized loyalty experiences using cached remote offers and audience targeting</p>
+
+    <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 25px; border-radius: 12px; margin: 25px auto; max-width: 700px; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);">
+      <h3 style="margin-top: 0; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.5em;">🎁</span> What You'll See
+      </h3>
+      <p style="margin: 0; line-height: 1.7; font-size: 1.05em;">
+        Based on your loyalty tier, you'll receive a personalized modal experience:
+      </p>
+      <ul style="margin: 15px 0 0 20px; line-height: 1.8;">
+        <li><strong>Bronze, Silver, or Gold members</strong> will see a coupon modal with their exclusive discount and tier benefits</li>
+        <li><strong>New visitors or Base tier</strong> will see an invitation to join the loyalty program and unlock rewards</li>
+      </ul>
+    </div>
+
     <div id="target-offer-container"></div>
   </div>
 </div>
 
 <section class="features">
   <div class="container">
-    <div class="feature-grid">
-      <div class="feature-card">
-        <h3>Fast & Lightweight</h3>
-        <p>Built with Express.js for optimal performance and minimal overhead.</p>
+    <div style="max-width: 900px; margin: 0 auto;">
+      <h2 style="text-align: center; margin-bottom: 30px; color: #333;">How This Demo Works</h2>
+
+      <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
+        <h3 style="color: #2563eb; margin-top: 0;">🎯 What You're Seeing</h3>
+        <p style="line-height: 1.6; color: #555;">
+          This site demonstrates Adobe Target's <strong>remote offers</strong> feature for personalized experiences.
+          When you visit, you'll see 1 of 4 different loyalty offers based on your Adobe Target profile tier. You can change your tier using the URL parameter `tier`. The offer is dynamically
+          loaded from a first party remote endpoint and rendered on the page using Adobe Experience Platform Web SDK (alloy). Once your tier is set
+          via the URL parameter, Target uses audience targeting to deliver the appropriate offer experience. Once your profile tier is set you can remove the URL parameter and your experience will persist.
       </div>
-      <div class="feature-card">
-        <h3>Dynamic Templating</h3>
-        <p>EJS templating makes it easy to create reusable components.</p>
+
+      <div class="feature-grid" style="margin-bottom: 30px;">
+        <div class="feature-card" style="background: linear-gradient(135deg, #6366F120, #4F46E520); border-left: 4px solid #6366F1;">
+          <h3>✨ Base Tier</h3>
+          <p>New visitors or those without a tier in their Target profile see a signup offer to join the loyalty program.</p>
+          <code style="display: block; margin-top: 10px; background: white; padding: 8px; border-radius: 4px; font-size: 0.85em;">?tier=base</code>
+        </div>
+        <div class="feature-card" style="background: linear-gradient(135deg, #CD7F3220, #8B5A2B20); border-left: 4px solid #CD7F32;">
+          <h3>🥉 Bronze Tier</h3>
+          <p>Bronze members get 10% off with standard benefits like free shipping.</p>
+          <code style="display: block; margin-top: 10px; background: white; padding: 8px; border-radius: 4px; font-size: 0.85em;">?tier=bronze</code>
+        </div>
+        <div class="feature-card" style="background: linear-gradient(135deg, #C0C0C020, #80808020); border-left: 4px solid #C0C0C0;">
+          <h3>🥈 Silver Tier</h3>
+          <p>Silver members enjoy 20% off with express shipping and priority support.</p>
+          <code style="display: block; margin-top: 10px; background: white; padding: 8px; border-radius: 4px; font-size: 0.85em;">?tier=silver</code>
+        </div>
+        <div class="feature-card" style="background: linear-gradient(135deg, #FFD70020, #FFA50020); border-left: 4px solid #FFD700;">
+          <h3>🥇 Gold Tier</h3>
+          <p>Gold members receive 30% off with VIP support and personal styling.</p>
+          <code style="display: block; margin-top: 10px; background: white; padding: 8px; border-radius: 4px; font-size: 0.85em;">?tier=gold</code>
+        </div>
       </div>
-      <div class="feature-card">
-        <h3>Easy to Customize</h3>
-        <p>Simple structure that's easy to understand and modify.</p>
+
+      <div style="background: #fff; padding: 25px; border-radius: 12px; border: 2px solid #e5e7eb; margin-bottom: 30px;">
+        <h3 style="color: #2563eb; margin-top: 0;">⚙️ Technical Implementation</h3>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="color: #333; margin-bottom: 10px;">1. Setting Your Profile</h4>
+          <p style="color: #555; margin-bottom: 10px;">The <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px;">tier</code> query parameter sets your Target profile attribute:</p>
+          <pre style="background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em;">alloy('sendEvent', {
+  renderDecisions: false,
+  decisionScopes: ['homepage-hero'],
+  data: {
+    __adobe: {
+      target: {
+        'profile.tier': 'tier param from url if exists'
+      }
+    }
+  }
+})</pre>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="color: #333; margin-bottom: 10px;">2. Audience Targeting</h4>
+          <p style="color: #555;">Target uses <strong>audiences</strong> based on tier values to qualify visitors. Each tier has a corresponding audience that matches the profile attribute.</p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="color: #333; margin-bottom: 10px;">3. Remote Offer Endpoint</h4>
+          <p style="color: #555; margin-bottom: 10px;">Remote offers call this endpoint from your top-level domain:</p>
+          <code style="display: block; background: #f3f4f6; padding: 12px; border-radius: 6px; color: #1e293b;">/api/loyalty-offer?tier={gold|silver|bronze|base}</code>
+        </div>
+
+        <div>
+          <h4 style="color: #333; margin-bottom: 10px;">4. Rendering with Launch</h4>
+          <p style="color: #555;">Adobe Launch uses <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px;">applyPropositions</code> to inject the remote offer HTML into the <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px;">#loyalty-offer-container</code> div.</p>
+        </div>
+      </div>
+
+      <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+        <h4 style="color: #92400e; margin-top: 0;">💡 Try It Yourself</h4>
+        <p style="color: #78350f; margin-bottom: 15px;">Add a <code style="background: #fde68a; padding: 2px 6px; border-radius: 3px;">?tier=</code> parameter to the URL to test different experiences:</p>
+        <div style="display: grid; gap: 10px;">
+          <a href="?tier=base" style="background: #6366F1; color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Test Base Tier</a>
+          <a href="?tier=bronze" style="background: #CD7F32; color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Test Bronze Tier</a>
+          <a href="?tier=silver" style="background: #C0C0C0; color: #333; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Test Silver Tier</a>
+          <a href="?tier=gold" style="background: #FFD700; color: #333; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Test Gold Tier</a>
+        </div>
       </div>
     </div>
   </div>

@@ -15,9 +15,9 @@ app.use(express.static(path.join(__dirname, "public")));
 // Routes
 app.get("/", (req, res) => {
   res.render("index", {
-    title: "Home",
-    heading: "Welcome to OrangeCap2",
-    message: "A static website built with Express and EJS",
+    title: "Target Remote Offers Demo",
+    heading: "Adobe Target Remote Offers Demo",
+    message: "Personalized loyalty experiences using cached remote offers",
     launchUrl: process.env.LAUNCH_URL,
   });
 });
