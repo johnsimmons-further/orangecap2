@@ -55,95 +55,102 @@ app.get("/remote-offer-html-dynamic", (req, res) => {
     );
 });
 
-// Remote offer endpoint: /api/loyalty-offer
-app.get("/api/loyalty-offer", (req, res) => {
-  function generateBronzeSVG() {
-    return `
-    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+
+
+app.get('/api/loyalty-offer', (req, res) => {
+  const { tier = 'bronze' } = req.query;
+  
+  const tiers = {
+    bronze: {
+      name: 'Bronze',
+      discount: '10%',
+      color: '#CD7F32',
+      gradient1: '#CD7F32',
+      gradient2: '#8B5A2B',
+      icon: generateBronzeSVG(),
+      perks: ['Free shipping', 'Early access', 'Birthday gift'],
+      badge: '🥉'
+    },
+    silver: {
+      name: 'Silver',
+      discount: '20%',
+      color: '#C0C0C0',
+      gradient1: '#C0C0C0',
+      gradient2: '#808080',
+      icon: generateSilverSVG(),
+      perks: ['Express shipping', 'Priority support', 'Exclusive events'],
+      badge: '🥈'
+    },
+    gold: {
+      name: 'Gold',
+      discount: '30%',
+      color: '#FFD700',
+      gradient1: '#FFD700',
+      gradient2: '#FFA500',
+      icon: generateGoldSVG(),
+      perks: ['Overnight shipping', 'VIP support', 'Personal stylist'],
+      badge: '🥇'
+    }
+  };
+
+  const tierData = tiers[tier.toLowerCase()] || tiers.bronze;
+
+  res.setHeader('Content-Type', 'text/html');
+  res.send(generateModalHTML(tierData));
+});
+
+function generateBronzeSVG() {
+  return `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:#CD7F32;stop-opacity:1" />
           <stop offset="50%" style="stop-color:#B8753D;stop-opacity:1" />
           <stop offset="100%" style="stop-color:#8B5A2B;stop-opacity:1" />
         </linearGradient>
-        <filter id="shadow">
-          <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.3"/>
-        </filter>
       </defs>
-      
-      <!-- Shield shape -->
       <path d="M60 10 L95 25 L95 60 Q95 85 60 105 Q25 85 25 60 L25 25 Z" 
             fill="url(#bronzeGrad)" 
-            filter="url(#shadow)" 
             stroke="#6B4423" 
             stroke-width="2"/>
-      
-      <!-- Bronze star -->
       <path d="M60 35 L65 50 L80 52 L70 62 L73 77 L60 69 L47 77 L50 62 L40 52 L55 50 Z" 
             fill="#FFE4B5" 
             opacity="0.8"/>
-      
-      <!-- Number 3 for third tier -->
-      <text x="60" y="70" 
-            font-family="Arial, sans-serif" 
-            font-size="24" 
-            font-weight="bold" 
-            fill="#FFE4B5" 
-            text-anchor="middle">3</text>
+      <text x="60" y="70" font-family="Arial" font-size="24" font-weight="bold" 
+            fill="#FFE4B5" text-anchor="middle">3</text>
     </svg>
   `;
-  }
+}
 
-  function generateSilverSVG() {
-    return `
-    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+function generateSilverSVG() {
+  return `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:#E8E8E8;stop-opacity:1" />
           <stop offset="50%" style="stop-color:#C0C0C0;stop-opacity:1" />
           <stop offset="100%" style="stop-color:#A8A8A8;stop-opacity:1" />
         </linearGradient>
-        <filter id="silverGlow">
-          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-          <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
       </defs>
-      
-      <!-- Shield shape -->
       <path d="M60 10 L95 25 L95 60 Q95 85 60 105 Q25 85 25 60 L25 25 Z" 
             fill="url(#silverGrad)" 
-            filter="url(#silverGlow)" 
             stroke="#909090" 
             stroke-width="2"/>
-      
-      <!-- Silver stars -->
       <path d="M60 30 L63 38 L72 39 L66 45 L68 54 L60 49 L52 54 L54 45 L48 39 L57 38 Z" 
-            fill="#FFFFFF" 
-            opacity="0.9"/>
+            fill="#FFFFFF" opacity="0.9"/>
       <path d="M45 55 L47 60 L52 61 L48 65 L49 70 L45 67 L41 70 L42 65 L38 61 L43 60 Z" 
-            fill="#FFFFFF" 
-            opacity="0.7"/>
+            fill="#FFFFFF" opacity="0.7"/>
       <path d="M75 55 L77 60 L82 61 L78 65 L79 70 L75 67 L71 70 L72 65 L68 61 L73 60 Z" 
-            fill="#FFFFFF" 
-            opacity="0.7"/>
-      
-      <!-- Number 2 for second tier -->
-      <text x="60" y="90" 
-            font-family="Arial, sans-serif" 
-            font-size="20" 
-            font-weight="bold" 
-            fill="#FFFFFF" 
-            text-anchor="middle">2</text>
+            fill="#FFFFFF" opacity="0.7"/>
+      <text x="60" y="90" font-family="Arial" font-size="20" font-weight="bold" 
+            fill="#FFFFFF" text-anchor="middle">2</text>
     </svg>
   `;
-  }
+}
 
-  function generateGoldSVG() {
-    return `
-    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+function generateGoldSVG() {
+  return `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
@@ -154,299 +161,227 @@ app.get("/api/loyalty-offer", (req, res) => {
           <stop offset="0%" style="stop-color:#FFEF00;stop-opacity:0.8" />
           <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0" />
         </radialGradient>
-        <filter id="goldGlow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-          <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
       </defs>
-      
-      <!-- Shield shape -->
       <path d="M60 10 L95 25 L95 60 Q95 85 60 105 Q25 85 25 60 L25 25 Z" 
             fill="url(#goldGrad)" 
-            filter="url(#goldGlow)" 
             stroke="#CC8800" 
             stroke-width="2"/>
-      
-      <!-- Shine effect -->
       <ellipse cx="50" cy="35" rx="25" ry="20" fill="url(#goldShine)" opacity="0.6"/>
-      
-      <!-- Crown -->
       <path d="M45 40 L48 50 L60 45 L72 50 L75 40 L70 48 L60 43 L50 48 Z" 
-            fill="#FFEF00" 
-            stroke="#CC8800" 
-            stroke-width="1"/>
-      
-      <!-- Large star -->
+            fill="#FFEF00" stroke="#CC8800" stroke-width="1"/>
       <path d="M60 50 L66 62 L79 64 L69.5 73.5 L72 87 L60 80 L48 87 L50.5 73.5 L41 64 L54 62 Z" 
-            fill="#FFFFFF" 
-            opacity="0.95" 
-            stroke="#FFD700" 
-            stroke-width="1"/>
-      
-      <!-- Number 1 for top tier -->
-      <text x="60" y="73" 
-            font-family="Arial, sans-serif" 
-            font-size="24" 
-            font-weight="bold" 
-            fill="#CC8800" 
-            text-anchor="middle">1</text>
-      
-      <!-- Sparkles -->
+            fill="#FFFFFF" opacity="0.95" stroke="#FFD700" stroke-width="1"/>
+      <text x="60" y="73" font-family="Arial" font-size="24" font-weight="bold" 
+            fill="#CC8800" text-anchor="middle">1</text>
       <circle cx="35" cy="30" r="2" fill="#FFFFFF" opacity="0.8">
         <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
       </circle>
       <circle cx="85" cy="35" r="2" fill="#FFFFFF" opacity="0.6">
         <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.5s" repeatCount="indefinite"/>
       </circle>
-      <circle cx="30" cy="65" r="2" fill="#FFFFFF" opacity="0.7">
-        <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.8s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="90" cy="70" r="2" fill="#FFFFFF" opacity="0.5">
-        <animate attributeName="opacity" values="0.5;0.2;0.5" dur="2.2s" repeatCount="indefinite"/>
-      </circle>
     </svg>
   `;
-  }
-  const { tier = "bronze" } = req.query;
+}
 
-  const tiers = {
-    bronze: {
-      name: "Bronze Member",
-      discount: "10%",
-      color: "#CD7F32",
-      gradient1: "#CD7F32",
-      gradient2: "#8B5A2B",
-      icon: generateBronzeSVG(),
-      perks: ["Free standard shipping", "Early sale access", "Birthday gift"],
-      cta: "Shop Bronze Exclusives",
-      badge: "🥉",
-    },
-    silver: {
-      name: "Silver Member",
-      discount: "20%",
-      color: "#C0C0C0",
-      gradient1: "#C0C0C0",
-      gradient2: "#808080",
-      icon: generateSilverSVG(),
-      perks: [
-        "Free express shipping",
-        "Priority support",
-        "Exclusive events",
-        "Double points",
-      ],
-      cta: "Shop Silver Exclusives",
-      badge: "🥈",
-    },
-    gold: {
-      name: "Gold Member",
-      discount: "30%",
-      color: "#FFD700",
-      gradient1: "#FFD700",
-      gradient2: "#FFA500",
-      icon: generateGoldSVG(),
-      perks: [
-        "Free overnight shipping",
-        "24/7 VIP support",
-        "Private shopping events",
-        "Triple points",
-        "Personal stylist",
-      ],
-      cta: "Shop Gold Exclusives",
-      badge: "🥇",
-    },
-  };
-
-  const tierData = tiers[tier.toLowerCase()] || tiers.bronze;
-
-  res.setHeader("Content-Type", "text/html");
-  res.send(generateOfferHTML(tierData));
-});
-
-function generateOfferHTML(tierData) {
+function generateModalHTML(tierData) {
   return `
-    <div class="loyalty-offer" style="
-      background: linear-gradient(135deg, ${tierData.gradient1}15 0%, ${tierData.gradient2}25 100%);
-      border: 3px solid ${tierData.color};
-      border-radius: 20px;
-      padding: 40px;
-      max-width: 600px;
-      margin: 0 auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 40px ${tierData.color}30;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      position: relative;
-      overflow: hidden;
-      animation: slideInUp 0.6s ease-out;
-    ">
-      <!-- Background decorative elements -->
-      <div style="
-        position: absolute;
-        top: -50px;
-        right: -50px;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        background: radial-gradient(circle, ${tierData.color}20, transparent);
-        pointer-events: none;
-      "></div>
+    <!-- Modal Overlay -->
+    <div class="loyalty-modal-overlay" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 40px;
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-out;
+    " onclick="if(event.target === this) this.remove()">
       
-      <!-- Badge ribbon -->
-      <div style="
-        position: absolute;
-        top: 20px;
-        right: -10px;
-        background: ${tierData.color};
-        color: white;
-        padding: 8px 25px 8px 15px;
-        font-weight: bold;
-        font-size: 0.9em;
-        clip-path: polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      ">
-        ${tierData.badge} ${tierData.name.toUpperCase()}
-      </div>
-      
-      <!-- SVG Icon -->
-      <div style="text-align: center; margin-bottom: 30px;">
-        ${tierData.icon}
-      </div>
-      
-      <!-- Main content -->
-      <div style="text-align: center;">
-        <h1 style="
-          color: #1a1a1a;
-          font-size: 2.5em;
-          margin: 0 0 10px 0;
-          font-weight: 800;
-          letter-spacing: -0.5px;
-        ">
-          Welcome Back, ${tierData.name}!
-        </h1>
+      <!-- Modal Card -->
+      <div class="loyalty-modal-card" style="
+        background: white;
+        width: 500px;
+        height: 500px;
+        max-width: 90vw;
+        max-height: 90vh;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        position: relative;
+        animation: slideInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      " onclick="event.stopPropagation()">
         
-        <div style="
-          background: linear-gradient(135deg, ${tierData.gradient1}, ${tierData.gradient2});
-          color: white;
-          display: inline-block;
-          padding: 15px 40px;
-          border-radius: 50px;
-          font-size: 2em;
-          font-weight: bold;
-          margin: 20px 0;
-          box-shadow: 0 8px 20px ${tierData.color}40;
-          animation: pulse 2s infinite;
-        ">
-          ${tierData.discount} OFF
-        </div>
-        
-        <p style="
-          color: #555;
-          font-size: 1.2em;
-          margin: 20px 0 30px 0;
-          line-height: 1.6;
-        ">
-          Your exclusive ${tierData.name.toLowerCase()} benefits are waiting!
-        </p>
-        
-        <!-- Perks list -->
-        <div style="
-          background: white;
-          border-radius: 15px;
-          padding: 25px;
-          margin: 30px 0;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-          text-align: left;
-        ">
-          <h3 style="
-            color: ${tierData.color};
-            margin: 0 0 15px 0;
-            font-size: 1.3em;
-            text-align: center;
-          ">
-            ✨ Your Exclusive Perks
-          </h3>
-          ${tierData.perks
-            .map(
-              (perk) => `
-            <div style="
-              padding: 10px 0;
-              border-bottom: 1px solid #f0f0f0;
-              display: flex;
-              align-items: center;
-            ">
-              <span style="
-                color: ${tierData.color};
-                margin-right: 10px;
-                font-size: 1.2em;
-              ">✓</span>
-              <span style="color: #333; font-size: 1em;">${perk}</span>
-            </div>
-          `,
-            )
-            .join("")}
-        </div>
-        
-        <!-- CTA Button -->
-        <button onclick="window.dispatchEvent(new CustomEvent('loyaltyOfferClick', {detail: {tier: '${tierData.name}'}}))" style="
-          background: linear-gradient(135deg, ${tierData.gradient1}, ${tierData.gradient2});
-          color: white;
+        <!-- Close button -->
+        <button style="
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: rgba(0,0,0,0.5);
           border: none;
-          padding: 18px 50px;
-          border-radius: 50px;
-          font-size: 1.2em;
-          font-weight: bold;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
           cursor: pointer;
-          box-shadow: 0 8px 25px ${tierData.color}50;
-          transition: all 0.3s ease;
-          text-transform: uppercase;
-          letter-spacing: 1px;
+          font-size: 18px;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10;
+          transition: all 0.2s;
         " 
-        onmouseover="
-          this.style.transform='translateY(-3px)';
-          this.style.boxShadow='0 12px 35px ${tierData.color}60';
-        " 
-        onmouseout="
-          this.style.transform='translateY(0)';
-          this.style.boxShadow='0 8px 25px ${tierData.color}50';
-        ">
-          ${tierData.cta} →
+        onmouseover="this.style.background='rgba(0,0,0,0.8)'; this.style.transform='rotate(90deg)'"
+        onmouseout="this.style.background='rgba(0,0,0,0.5)'; this.style.transform='rotate(0deg)'"
+        onclick="document.querySelector('.loyalty-modal-overlay').remove()">
+          ×
         </button>
         
-        <p style="
-          margin-top: 25px;
-          color: #999;
-          font-size: 0.85em;
-          font-style: italic;
+        <!-- Colored header section -->
+        <div style="
+          background: linear-gradient(135deg, ${tierData.gradient1}, ${tierData.gradient2});
+          padding: 25px 20px;
+          text-align: center;
         ">
-          Offer automatically applied at checkout
-        </p>
+          <!-- SVG Badge -->
+          <div style="margin-bottom: 8px;">
+            ${tierData.icon}
+          </div>
+          
+          <!-- Tier name -->
+          <h2 style="
+            color: white;
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          ">
+            ${tierData.badge} ${tierData.name} Member
+          </h2>
+        </div>
+        
+        <!-- White content section -->
+        <div style="
+          background: white;
+          flex: 1;
+          padding: 30px 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        ">
+          <!-- Discount badge -->
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="
+              background: linear-gradient(135deg, ${tierData.gradient1}, ${tierData.gradient2});
+              color: white;
+              display: inline-block;
+              padding: 12px 32px;
+              border-radius: 25px;
+              font-size: 2em;
+              font-weight: 800;
+              box-shadow: 0 4px 15px ${tierData.color}40;
+            ">
+              ${tierData.discount} OFF
+            </div>
+          </div>
+          
+          <!-- Perks list -->
+          <div style="flex: 1; margin-bottom: 20px;">
+            <p style="
+              text-align: center;
+              color: #666;
+              font-size: 0.9em;
+              margin: 0 0 15px 0;
+              font-weight: 600;
+            ">
+              YOUR EXCLUSIVE BENEFITS
+            </p>
+            ${tierData.perks.map(perk => `
+              <div style="
+                padding: 6px 0;
+                display: flex;
+                align-items: center;
+                font-size: 0.85em;
+              ">
+                <span style="
+                  color: ${tierData.color};
+                  margin-right: 8px;
+                  font-size: 1.2em;
+                  font-weight: bold;
+                ">✓</span>
+                <span style="color: #444;">${perk}</span>
+              </div>
+            `).join('')}
+          </div>
+          
+          <!-- CTA Button -->
+          <div>
+            <button onclick="
+              window.dispatchEvent(new CustomEvent('loyaltyOfferClick', {detail: {tier: '${tierData.name}'}}));
+              document.querySelector('.loyalty-modal-overlay').remove();
+            " style="
+              width: 100%;
+              background: linear-gradient(135deg, ${tierData.gradient1}, ${tierData.gradient2});
+              color: white;
+              border: none;
+              padding: 16px;
+              border-radius: 12px;
+              font-size: 1em;
+              font-weight: 700;
+              cursor: pointer;
+              box-shadow: 0 4px 15px ${tierData.color}40;
+              transition: all 0.3s ease;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            " 
+            onmouseover="
+              this.style.transform='translateY(-2px)';
+              this.style.boxShadow='0 6px 20px ${tierData.color}60';
+            " 
+            onmouseout="
+              this.style.transform='translateY(0)';
+              this.style.boxShadow='0 4px 15px ${tierData.color}40';
+            ">
+              Shop Now →
+            </button>
+            
+            <p style="
+              text-align: center;
+              margin: 12px 0 0 0;
+              color: #999;
+              font-size: 0.75em;
+            ">
+              Applied automatically at checkout
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     
     <style>
-      @keyframes slideInUp {
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideInScale {
         from {
           opacity: 0;
-          transform: translateY(30px);
+          transform: scale(0.9) translateY(-20px);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: scale(1) translateY(0);
         }
       }
       
-      @keyframes pulse {
-        0%, 100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.05);
-        }
-      }
-      
-      .loyalty-offer button:active {
-        transform: translateY(-1px) !important;
+      .loyalty-modal-card button:active {
+        transform: translateY(0) scale(0.98) !important;
       }
     </style>
   `;
